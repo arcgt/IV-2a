@@ -20,11 +20,11 @@ os.makedirs(f'results', exist_ok=True)
 
 class CSP_Model:
 	def __init__(self):
-		self.data_path 	= '/usr/scratch/xavier/herschmi/EEG_data/physionet/'
+		self.data_path 	= '/usr/scratch/xavier/herschmi/EEG_data/physionet/' #data path
 		self.useCSP = True
 		self.fs = 160. # sampling frequency
 		self.NO_channels = 64 # number of EEG channels
-		self.NO_subjects = 105
+		self.NO_subjects = 105 # number of subjects
 		self.NO_csp = 12 # Total number of CSP feature per band and timewindow
 
 		self.bw = np.array([26]) # bandwidth of filtered signals
@@ -51,6 +51,7 @@ class CSP_Model:
 		self.NO_features = self.NO_csp*self.NO_bands*self.NO_time_windows
 
 	def run_csp(self):
+		# obtain spatial filters
 		if self.useCSP:
 			w = generate_projection(self.train_data,self.train_label, self.NO_csp,self.filter_bank,self.time_windows)
 		else:
@@ -59,6 +60,7 @@ class CSP_Model:
 		return w
 
 	def load_data(self):
+		#load data
 		npzfile = np.load(self.data_path+f'{4}class.npz')
 		self.train_data, self.train_label = npzfile['X_Train'], npzfile['y_Train']
 
@@ -66,18 +68,18 @@ def main():
 	print("Starting program...")
 	model = CSP_Model()
 
-	w_sum = 0
+	w_sum = 0 # sum of filters for each subject
 
 	for model.subject in range(1,model.NO_subjects+1):
 		start = time.time()
 		model.load_data()
-		w_sum += model.run_csp()
+		w_sum += model.run_csp() # adding filter of individual subject to sum
 		end = time.time()
 		print("Subject " + str(model.subject)+": Time elapsed = " + str(end - start) + " s")
 
-	w_avg = w_sum / 105
+	w_avg = w_sum / 105 # calculating average of filters
 
-	np.savetxt(f'results/w_avg.csv', w_avg[0][0])
+	np.savetxt(f'results/w_avg.csv', w_avg[0][0]) # saving file
 	print(w_avg)
 
 if __name__ == '__main__':
