@@ -77,9 +77,9 @@ def main():
 		end = time.time()
 		print("Subject " + str(model.subject)+": Time elapsed = " + str(end - start) + " s")
 
-	w_avg = w_sum / 105 # calculating average of filters
+	w_avg = w_sum[0][0] / 105 # calculating average of filters
 
-	np.savetxt(f'results/w_avg.csv', w_avg[0][0]) # saving file
+	np.savetxt(f'results/w_avg.csv', w_avg) # saving file
 	print(w_avg)
 
 if __name__ == '__main__':
