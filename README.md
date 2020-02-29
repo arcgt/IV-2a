@@ -1,3 +1,5 @@
+This project uses a Common Spatial Pattern (CSP) feature calculation model to engage in channel selection. It uses modified code from the MultiScale-BCI/IV-2a repository with the following description:
+
 # Fast and Accurate Multiclass Inference for MI-BCIs Using Large Multiscale Temporal and Spectral Features
 
 This is the code of an accepted conference paper submitted to EUSIPCO 2018. The preprint is available on this arXiv [link](https://arxiv.org/abs/1806.06823). If you are using this code please cite our paper. 
