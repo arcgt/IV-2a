@@ -45,7 +45,7 @@ def generate_projection(data,class_vec,NO_csp,filter_bank,time_windows,NO_classe
 	filter_bank -- numpy array containing butter sos filter coeffitions dim  [NO_bands,order,6]
 	time_windows -- numpy array [[start_time1,end_time1],...,[start_timeN,end_timeN]]
 
-	Return:	spatial filter numpy array of size [NO_timewindows,NO_freqbands,22,NO_csp]
+	Return:	spatial filter numpy array of size [NO_timewindows,NO_freqbands,NO_channels,NO_csp]
 	'''
 	time_windows = time_windows.reshape((-1,2))
 	NO_bands = filter_bank.shape[0]
@@ -85,6 +85,7 @@ def generate_projection(data,class_vec,NO_csp,filter_bank,time_windows,NO_classe
 			for clas in range(0,NO_classes):
 				cov_avg[clas,:,:] = rie_mean.mean_covariance(cov[clas,:cov_cntr[clas],:,:], metric = 'euclid')
 			w[t_wind,subband,:,:] = csp_one_one(cov_avg,NO_csp,NO_classes)
+		print("commencing...")
 	return w
 
 
@@ -97,7 +98,7 @@ def generate_eye(data,class_vec,filter_bank,time_windows):
 	filter_bank -- numpy array containing butter sos filter coeffitions dim  [NO_bands,order,6]
 	time_windows -- numpy array [[start_time1,end_time1],...,[start_timeN,end_timeN]]
 
-	Return:	spatial unity filter numpy array of size [NO_timewindows,NO_freqbands,22,NO_csp]
+	Return:	spatial unity filter numpy array of size [NO_timewindows,NO_freqbands,NO_channels,NO_csp]
 	'''
 	time_windows = time_windows.reshape((-1,2))
 	NO_bands = filter_bank.shape[0]

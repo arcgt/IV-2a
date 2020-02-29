@@ -7,6 +7,36 @@ import numpy as np
 __author__ = "Tianhong Gan"
 __email__ = "tianhonggan@outlook.com"
 
+def dimension_reduction(w_avg_4d, NO_channels, NO_csp):
+    ''' reducing the dimensions of w_avg from 4D to 2D by taking the modulus
+
+     Keyword arguments:
+     w_avg_4D -- four dimensional array of spatial filters of size [NO_timewindows,NO_freqbands,NO_channels,NO_csp]
+     NO_channels - total number of channels
+     NO_csp -- number of spatial filters
+
+     Return: set of 12 spatial filters obtained from a average of filters obtained from each subject of size [NO_channels, NO_csp]
+    '''
+    w_avg_2d = np.zeros((NO_channels, NO_csp))
+
+    csp_index = 0
+    channel_index = 0
+
+    for window in w_avg_4d:
+        for freqband in window:
+            for channel in freqband:
+                if channel_index == NO_channels:
+                    channel_index = 0
+                for filter in channel:
+                    if csp_index == NO_csp:
+                        csp_index = 0
+                    w_avg_2d[channel_index][csp_index] += filter**2
+                    csp_index+=1
+                channel_index+=1
+
+    return np.sqrt(w_avg_2d)
+
+
 def ranking(w_avg, NO_channels):
     ''' ranking the energy of each channel obtained from the set of 12 spatial filters
 
