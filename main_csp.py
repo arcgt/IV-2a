@@ -82,10 +82,10 @@ def main():
 	#
 	# w_avg = w_sum[0][0] / 105 # calculating average of filters
 	#
-	# np.savetxt(f'results/w_avg.csv', w_avg) # saving file
+	# np.savetxt(f'w_avg.csv', w_avg) # saving file
 
 	# channel selection from saved spatial filters
-	w_avg = np.loadtxt(open("results/w_avg.csv", "rb"), delimiter=" ")
+	w_avg = np.loadtxt(open("w_avg.csv", "rb"), delimiter=" ")
 	# print(w_avg)
 
 	w_squared_sum_sorted = ranking(w_avg, model.NO_channels)
