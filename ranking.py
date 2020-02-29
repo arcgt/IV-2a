@@ -31,21 +31,18 @@ def ranking(w_avg, NO_channels):
     return w_squared_sum_sorted
 
 
-def channel_selection(w_squared_sum_sorted, NO_selected):
+def channel_selection(w_squared_sum_sorted, NO_channels, NO_selected):
     ''' select channels with highest energy usage
 
     Keyword arguments:
     w_squared_sum_sorted -- channels sorted by energy usage of size [NO_channels, 2]
     NO_selected -- number of channels to select
 
-    Return: 8, 16 or 24 channels with the highest energy usage
+    Return: 'NO_selected' channels with the highest energy usage
     '''
-    if NO_selected == 8: # return highest 8 channels
-        eight_channel = w_squared_sum_sorted[0:8, 0]
-        return eight_channel
-    elif NO_selected == 16: # return highest 16 channels
-        sixteen_channel = w_squared_sum_sorted[0:16, 0]
-        return sixteen_channel
-    else: # return highest 24 channels
-        twentyfour_channel = w_squared_sum_sorted[0:24, 0]
-        return twentyfour_channel
+    if NO_selected <= NO_channels:
+        selected_channels = np.sort(w_squared_sum_sorted[0:NO_selected, 0])
+    else:
+        selected_channels = np.sort(w_squared_sum_sorted[0:NO_channels, 0])
+
+    return selected_channels

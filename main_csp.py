@@ -25,7 +25,7 @@ class CSP_Model:
 		self.useCSP = True
 		self.fs = 160. # sampling frequency
 		self.NO_channels = 64 # number of EEG channels
-		self.NO_selected_channels = 24 # number of selected channels, 8, 16 or 24
+		self.NO_selected_channels = 24 # number of selected channels
 		self.NO_subjects = 105 # number of subjects
 		self.NO_csp = 12 # Total number of CSP feature per band and timewindow
 
@@ -91,7 +91,7 @@ def main():
 	w_squared_sum_sorted = ranking(w_avg, model.NO_channels)
 	# print(w_squared_sum_sorted)
 
-	selected_channels = channel_selection(w_squared_sum_sorted, model.NO_selected_channels)
+	selected_channels = channel_selection(w_squared_sum_sorted, model.NO_channels, model.NO_selected_channels)
 	print("The selected channels are: ")
 	print(selected_channels)
 
