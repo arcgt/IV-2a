@@ -31,7 +31,7 @@ class CSP_Model:
 		self.NO_subjects = 105 # number of subjects
 		self.NO_csp = 12 # Total number of CSP feature per band and timewindow
 
-		self.bw = np.array([26]) # bandwidth of filtered signals
+		self.bw = np.array([4, 8, 16, 26]) # bandwidth of filtered signals
 		# self.filter_bank = self.filter_bank[18:27] # use only 4Hz bands
 		self.ftype = 'butter' # 'fir', 'butter'
 		self.forder= 2 # 4
@@ -49,7 +49,7 @@ class CSP_Model:
 									[1,3],
 									[0,3]])*self.fs # time windows in [s] x fs for using as a feature
 		self.time_windows = time_windows_flt.astype(int)
-		self.time_windows = self.time_windows[8] # use only largest timewindow
+		# self.time_windows = self.time_windows[8] # use only largest timewindow
 		self.NO_time_windows = int(self.time_windows.size/2)
 
 		self.NO_features = self.NO_csp*self.NO_bands*self.NO_time_windows
