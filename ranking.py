@@ -10,6 +10,11 @@ __email__ = "tianhonggan@outlook.com"
 def dimension_reduction(w_avg_4d, NO_channels, NO_csp):
     ''' reducing the dimensions of w_avg from 4D to 2D by taking the modulus
 
+    given the 4D input matrix:
+       1. for every time window and frequency, there is a 2D array of NO_channel x NO_csp
+       2. take every element of every 2D array, square it, and add to sum matrix at the position of that element
+       3. take the square root of each element in the final 2D array to obtain modulus of that element
+
      Keyword arguments:
      w_avg_4D -- four dimensional array of spatial filters of size [NO_timewindows,NO_freqbands,NO_channels,NO_csp]
      NO_channels - total number of channels
