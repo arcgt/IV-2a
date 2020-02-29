@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Model for common spatial pattern (CSP) feature calculation and classification for EEG data
+Model for common spatial pattern (CSP) feature calculation
 '''
 
 import os
@@ -12,6 +12,7 @@ import time
 from csp import generate_projection,generate_eye,extract_feature
 import get_data as get
 from filters import load_filterbank
+from ranking import ranking, channel_selection
 
 __author__ = "Michael Hersche and Tino Rellstab"
 __email__ = "herschmi@ethz.ch,tinor@ethz.ch"
@@ -80,7 +81,14 @@ def main():
 	w_avg = w_sum[0][0] / 105 # calculating average of filters
 
 	np.savetxt(f'results/w_avg.csv', w_avg) # saving file
+	# w_avg = numpy.loadtxt(open("w_avg.csv", "rb"), delimiter=" ") #[[12] x64]
 	print(w_avg)
+
+	w_squared_sum_sorted = ranking(w_avg, model.NO_channels)
+	selected_channels = channel_selection(w_squared_sum_sorted, model.NO_channels, 8) #NO_selected = 8, 16, 24
+
+	print("The selected channels are: ")
+	print(selected_channels)
 
 if __name__ == '__main__':
 	main()

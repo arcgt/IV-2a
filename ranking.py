@@ -1,7 +1,7 @@
-# w_avg = numpy.loadtxt(open("w_avg.csv", "rb"), delimiter=" ") #[[12] x64]
+import numpy as np
 
-def ranking(w_avg):
-    w_squared_sum = np.zeros((64,2))
+def ranking(w_avg, NO_channels):
+    w_squared_sum = np.zeros((NO_channels,2))
 
     index = 0
 
@@ -13,13 +13,17 @@ def ranking(w_avg):
 
     w_squared_sum_sorted = w_squared_sum[w_squared_sum[:,1].argsort()]
 
-    eight_channel = w_squared_sum_sorted[[56:64], 0]
-    sixteen_channel = w_squared_sum_sorted[[48:64], 0]
-    twentyfour_channel = w_squared_sum_sorted[[40:64], 0]
+    return w_squared_sum_sorted
 
-    print("8 channels: ")
-    print(eight_channel)
-    print("16 channels: ")
-    print(sixteen_channel)
-    print("24 channels: ")
-    print(twentyfour_channel)
+
+def channel_selection(w_squared_sum_sorted, NO_channels, NO_selected):
+    eight_channel = w_squared_sum_sorted[[56:NO_channels], 0]
+    sixteen_channel = w_squared_sum_sorted[[48:NO_channels], 0]
+    twentyfour_channel = w_squared_sum_sorted[[40:NO_channels], 0]
+
+    if NO_selected == 8:
+        return eight_channel
+    elif NO_selected == 16:
+        return sixteen_channel
+    else:
+        return twentyfour_channel
