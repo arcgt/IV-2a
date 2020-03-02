@@ -13,7 +13,7 @@ import tensorflow as tf
 import get_data as get
 from filters import load_filterbank
 from csp import generate_projection,generate_eye,extract_feature
-from ranking import dimension_reduction, channel_selection
+from ranking import dimension_reduction, channel_selection_csprank, ranking_avg, channel_selection_avg
 
 __author__ = "Michael Hersche and Tino Rellstab"
 __email__ = "herschmi@ethz.ch,tinor@ethz.ch"
@@ -27,7 +27,7 @@ class CSP_Model:
 		self.useCSP = True
 		self.fs = 160. # sampling frequency
 		self.NO_channels = 64 # number of EEG channels
-		self.NO_selected_channels = 38 # number of selected channels
+		self.NO_selected_channels = 16 # number of selected channels
 		self.NO_subjects = 105 # number of subjects
 		self.NO_csp = 12 # Total number of CSP feature per band and timewindow
 
@@ -95,12 +95,12 @@ def main():
 	w_avg = np.loadtxt(open("w_avg.csv", "rb"), delimiter=" ")
 
 	# # V1 using ranking with average energy
-	# w_squared_sum_sorted = ranking(w_avg, model.NO_channels)
+	# w_squared_sum_sorted = ranking_avg(w_avg, model.NO_channels)
 	# # print(w_squared_sum_sorted)
-	# selected_channels = channel_selection(w_squared_sum_sorted, model.NO_channels, model.NO_selected_channels)
+	# selected_channels = channel_selection_avg(w_squared_sum_sorted, model.NO_channels, model.NO_selected_channels)
 
 	# V2 using CSP-ranking
-	selected_channels = channel_selection(w_avg, model.NO_channels, model.NO_selected_channels, model.NO_csp)
+	selected_channels = channel_selection_csprank(w_avg, model.NO_channels, model.NO_selected_channels, model.NO_csp)
 
 	print("The selected channels are: ")
 	print(selected_channels)
