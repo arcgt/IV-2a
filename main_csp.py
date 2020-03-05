@@ -17,14 +17,15 @@ from ranking import dimension_reduction, channel_selection_csprank, channel_sele
 __author__ = "Michael Hersche, Tino Rellstab, Tianhong Gan"
 __email__ = "herschmi@ethz.ch, tinor@ethz.ch, tianhonggan@outlook.com"
 
-os.makedirs(f'results', exist_ok=True) # creating results directory
+results_dir=f'results'
+os.makedirs(f'{results_dir}', exist_ok=True)
 
 class CSP_Model:
 	def __init__(self):
 		self.data_path 	= '/usr/scratch/xavier/herschmi/EEG_data/physionet/' #data path
 		self.obtain_filter = False # need to reobtain filters
 		self.run_channel_selection = True # need to select channels
-		self.channel_selection_method = 2 # 1: w squared sum, 2: csp-rank
+		self.channel_selection_method = 1 # 1: w squared sum, 2: csp-rank
 
 		self.fs = 160. # sampling frequency
 		self.NO_channels = 64 # number of EEG channels
@@ -57,29 +58,29 @@ class CSP_Model:
 
 	def load_data(self):
 		#load data
-		npzfile = np.load(self.data_path+f'{4}class.npz')
+		npzfile = np.load(self.data_path+f'{NO_classes}class.npz')
 		self.train_data, self.train_label = npzfile['X_Train'], npzfile['y_Train']
 
 	def run_csp(self):
 		# obtaining the set of 12 spatial filters across an average of all subjects.
 		w_sum = 0 # sum of filters for each subject
 
-		# for self.subject in range(1,self.NO_subjects+1):
-		for self.subject in range(1,3): #test
+		for self.subject in range(1,self.NO_subjects+1):
+		# for self.subject in range(1,3): #test
 			start = time.time()
 			self.load_data()
 			w_sum += generate_projection(self.train_data,self.train_label, self.NO_csp,self.filter_bank,self.time_windows) # adding filter of individual subject to sum
 			end = time.time()
 			print("Subject " + str(self.subject)+": Time elapsed = " + str(end - start) + " s")
 
-		w_avg_4d = w_sum / 2 # calculating average of filters
+		w_avg_4d = w_sum / 105 # calculating average of filters
 		w_avg = dimension_reduction(w_avg_4d, self.NO_channels, self.NO_csp) # dimension reduction (for multiscale CSP)
 
-		np.savetxt(f'results/w_avg_{self.NO_classes}class_csp.csv', w_avg) # saving file
+		np.savetxt(f'{results_dir}/w_avg_{self.NO_classes}class_csp.csv', w_avg) # saving file
 
 	def channel_selection(self):
 		# channel selection from saved spatial filters
-		w_avg = np.loadtxt(open(f'results/w_avg_{self.NO_classes}class_csp.csv', "rb"), delimiter=" ")
+		w_avg = np.loadtxt(open(f'{results_dir}/w_avg_{self.NO_classes}class_csp.csv', "rb"), delimiter=" ")
 
 		if self.channel_selection_method == 1: #V1 using w squared sum
 			selected_channels = channel_selection_squared_sum(w_avg, self.NO_channels, self.NO_selected_channels)
