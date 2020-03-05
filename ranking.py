@@ -41,6 +41,36 @@ def dimension_reduction(w_avg_4d, NO_channels, NO_csp):
 
     return np.sqrt(w_avg_2d)
 
+# V1 using ranking using the squared sum
+def channel_selection_squared_sum(w_avg, NO_channels, NO_selected_channels):
+    ''' ranking the energy of each channel obtained from the set of 12 spatial filters by the squared sum, select channels with highest energy usage
+
+     Keyword arguments:
+     w_avg -- set of 12 spatial filters obtained from a average of filters obtained from each subject of size [NO_channels, NO_csp]
+     NO_channels - total number of channels
+     NO_selected_channels -- number of channels to select
+
+    Return: 'NO_selected_channels' channels with the highest energy usage
+    '''
+    w_squared_sum = np.zeros((NO_channels,2)) # creating an empty of dimension NO_channels x 2 for channel number and energy
+
+    index = 0 # iterator
+
+    for channel in w_avg:
+        w_squared_sum[index][0] = index # set channel number
+        for filter in channel:
+            w_squared_sum[index][1] += filter**2 # set channel energy
+        index+=1
+
+    w_squared_sum_sorted = w_squared_sum[w_squared_sum[:,1].argsort()][::-1] # sort energy in descending order
+
+    if NO_selected_channels <= NO_channels:
+        selected_channels = w_squared_sum_sorted[0:NO_selected_channels, 0]
+    else:
+        selected_channels = w_squared_sum_sorted[0:NO_channels, 0]
+
+    return np.sort(selected_channels)
+
 # V2 using CSP-ranking
 def channel_selection_csprank(w_avg, NO_channels, NO_selected_channels, NO_csp):
     ''' ranking and channel selection using the CSP-rank method
@@ -77,9 +107,9 @@ def channel_selection_csprank(w_avg, NO_channels, NO_selected_channels, NO_csp):
     selected_channels = np.ones(NO_selected_channels) * 404
     selected_index = 0
     filter_index = 0
-    w_avg_channel_index = np.zeros(12)
+    w_avg_channel_index = np.zeros(NO_csp)
     while selected_index < NO_selected_channels:
-        if filter_index == 12:
+        if filter_index == NO_csp:
             filter_index = 0
         while w_avg_sorted[int(w_avg_channel_index[filter_index])][filter_index] in selected_channels:
             w_avg_channel_index[filter_index] += 1
@@ -88,44 +118,3 @@ def channel_selection_csprank(w_avg, NO_channels, NO_selected_channels, NO_csp):
         filter_index += 1
 
     return np.sort(selected_channels)
-
-	# V1 using ranking with average energy
-def ranking_avg(w_avg, NO_channels):
-    ''' ranking the energy of each channel obtained from the set of 12 spatial filters
-
-     Keyword arguments:
-     w_avg -- set of 12 spatial filters obtained from a average of filters obtained from each subject of size [NO_channels, NO_csp]
-     NO_channels - total number of channels
-
-     Return: channels sorted by energy usage of size [NO_channels, 2]
-    '''
-    w_squared_sum = np.zeros((NO_channels,2)) # creating an empty of dimension NO_channels x 2 for channel number and energy
-
-    index = 0 # iterator
-
-    for channel in w_avg:
-        w_squared_sum[index][0] = index # set channel number
-        for filter in channel:
-            w_squared_sum[index][1] += filter**2 # set channel energy
-        index+=1
-
-    w_squared_sum_sorted = w_squared_sum[w_squared_sum[:,1].argsort()][::-1] # sort energy in descending order
-
-    return w_squared_sum_sorted
-
-
-def channel_selection_avg(w_squared_sum_sorted, NO_channels, NO_selected_channels):
-    ''' select channels with highest energy usage
-
-    Keyword arguments:
-    w_squared_sum_sorted -- channels sorted by energy usage of size [NO_channels, 2]
-    NO_selected_channels -- number of channels to select
-
-    Return: 'NO_selected_channels' channels with the highest energy usage
-    '''
-    if NO_selected_channels <= NO_channels:
-        selected_channels = np.sort(w_squared_sum_sorted[0:NO_selected_channels, 0])
-    else:
-        selected_channels = np.sort(w_squared_sum_sorted[0:NO_channels, 0])
-
-    return selected_channels
