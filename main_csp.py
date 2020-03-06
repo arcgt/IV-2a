@@ -29,10 +29,10 @@ class CSP_Model:
 
 		self.fs = 160. # sampling frequency
 		self.NO_channels = 64 # number of EEG channels
-		self.NO_selected_channels = 16 # number of selected channels
+		self.NO_selected_channels = 38 # number of selected channels
 		self.NO_subjects = 105 # number of subjects
-		self.NO_csp = 12 # Total number of CSP features per band and timewindow
-		self.NO_classes = 4
+		self.NO_csp = 2 # Total number of CSP features per band and timewindow
+		self.NO_classes = 2
 
 		self.bw = np.array([26]) # bandwidth of filtered signals
 		self.ftype = 'butter' # 'fir', 'butter'
@@ -58,7 +58,7 @@ class CSP_Model:
 
 	def load_data(self):
 		#load data
-		npzfile = np.load(self.data_path+f'{NO_classes}class.npz')
+		npzfile = np.load(self.data_path+f'{self.NO_classes}class.npz')
 		self.train_data, self.train_label = npzfile['X_Train'], npzfile['y_Train']
 
 	def run_csp(self):
@@ -69,11 +69,11 @@ class CSP_Model:
 		# for self.subject in range(1,3): #test
 			start = time.time()
 			self.load_data()
-			w_sum += generate_projection(self.train_data,self.train_label, self.NO_csp,self.filter_bank,self.time_windows) # adding filter of individual subject to sum
+			w_sum += generate_projection(self.train_data,self.train_label,self.NO_csp,self.filter_bank,self.time_windows,self.NO_classes) # adding filter of individual subject to sum
 			end = time.time()
 			print("Subject " + str(self.subject)+": Time elapsed = " + str(end - start) + " s")
 
-		w_avg_4d = w_sum / 105 # calculating average of filters
+		w_avg_4d = w_sum / self.NO_subjects # calculating average of filters
 		w_avg = dimension_reduction(w_avg_4d, self.NO_channels, self.NO_csp) # dimension reduction (for multiscale CSP)
 
 		np.savetxt(f'{results_dir}/w_avg_{self.NO_classes}class_csp.csv', w_avg) # saving file
