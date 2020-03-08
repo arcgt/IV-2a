@@ -85,7 +85,6 @@ def generate_projection(data,class_vec,NO_csp,filter_bank,time_windows,NO_classe
 			for clas in range(0,NO_classes):
 				cov_avg[clas,:,:] = rie_mean.mean_covariance(cov[clas,:cov_cntr[clas],:,:], metric = 'euclid')
 			w[t_wind,subband,:,:] = csp_one_one(cov_avg,NO_csp,NO_classes)
-		print("commencing...")
 	return w
 
 
