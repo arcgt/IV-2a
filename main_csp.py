@@ -9,7 +9,7 @@ import numpy as np
 import time
 
 # import self defined functions
-import get_data as get
+# import get_data as get
 from filters import load_filterbank
 from csp import generate_projection,generate_eye,extract_feature
 from ranking import dimension_reduction, channel_selection_csprank, channel_selection_squared_sum
@@ -80,9 +80,6 @@ class CSP_Model:
 			selected_channels = channel_selection_csprank(w, self.NO_channels, self.NO_selected_channels, self.NO_csp)
 
 		return selected_channels
-
-
-
 
 def main():
 	print("Starting program...")
