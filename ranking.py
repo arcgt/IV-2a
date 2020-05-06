@@ -118,3 +118,22 @@ def channel_selection_csprank(w, NO_channels, NO_selected_channels, NO_csp):
         filter_index += 1
 
     return np.sort(selected_channels)
+
+def get_cspweights(w):
+    ''' get csp weights for all 64 channels
+
+     Keyword arguments:
+     w -- set of 12 spatial filters of size [NO_channels, NO_csp]
+
+    Return: csp weights
+    '''
+    w_sum = np.zeros(64) # creating an empty of dimension 64 x 2 for channel number and energy
+
+    index = 0 # iterator
+
+    for channel in w:
+        for filter in channel:
+            w_sum[index] += np.sqrt(filter**2) # set channel energy
+        index+=1
+
+    return w_sum
